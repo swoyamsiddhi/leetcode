@@ -2,36 +2,53 @@ class Solution {
 public:
     vector<int> majorityElement(vector<int>& nums) {
         int n = nums.size();
-        vector<int> result;
+
+        int el1 = 0, el2 = 0;
+        int cnt1 = 0, cnt2 = 0;
+
+        // Find the two possible candidates
+        for (int i = 0; i < n; i++) {
+
+            if (cnt1 == 0 && nums[i] != el2) {
+                el1 = nums[i];
+                cnt1 = 1;
+            }
+            else if (cnt2 == 0 && nums[i] != el1) {
+                el2 = nums[i];
+                cnt2 = 1;
+            }
+            else if (nums[i] == el1) {
+                cnt1++;
+            }
+            else if (nums[i] == el2) {
+                cnt2++;
+            }
+            else {
+                cnt1--;
+                cnt2--;
+            }
+        }
+
+        // Verify the candidates
+        cnt1 = 0;
+        cnt2 = 0;
 
         for (int i = 0; i < n; i++) {
-            bool alreadyPresent = false;
+            if (nums[i] == el1)
+                cnt1++;
 
-            for (int x : result) {
-                if (x == nums[i]) {
-                    alreadyPresent = true;
-                    break;
-                }
-            }
-
-            if (alreadyPresent)
-                continue;
-
-            int cnt = 0;
-
-            for (int j = 0; j < n; j++) {
-                if (nums[j] == nums[i]) {
-                    cnt++;
-                }
-            }
-
-            if (cnt > n / 3) {
-                result.push_back(nums[i]);
-            }
-
-            if (result.size() == 2)
-                break;
+            if (nums[i] == el2)
+                cnt2++;
         }
+
+        vector<int> result;
+        int mini = n / 3 + 1;
+
+        if (cnt1 >= mini)
+            result.push_back(el1);
+
+        if (cnt2 >= mini && el1 != el2)
+            result.push_back(el2);
 
         return result;
     }
